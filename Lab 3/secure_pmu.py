@@ -26,13 +26,18 @@ except ValueError:
     print("Error: <port> must be an integer.")
     sys.exit(1)
 
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.load_cert_chain(certfile=filecert, keyfile=key)
+context.verify_mode = ssl.CERT_NONE  
 pmu_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 pmu_socket.bind((HOST, port))
 pmu_socket.listen(5)
+print(f"Listening on {HOST}:{port}")
 
 while True:
 	conn, addr = pmu_socket.accept()
-	socket_ssl = ssl.wrap_socket(conn, server_side=True, certfile=filecert, keyfile=key, cert_reqs=ssl.CERT_NONE)
+	print("first step ok")
+	socket_ssl = ssl.wrap_socket(conn, server_side=True)
 	print(f"Connection from {addr} accepted")
 	cmd = socket_ssl.recv(BUFFER_SIZE).decode()
 	if cmd.startswith("CMD_short:0"):
