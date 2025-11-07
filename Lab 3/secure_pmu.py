@@ -30,6 +30,7 @@ context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.load_cert_chain(certfile=filecert, keyfile=key)
 context.verify_mode = ssl.CERT_NONE  
 pmu_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+pmu_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 pmu_socket.bind((HOST, port))
 pmu_socket.listen(5)
 print(f"Listening on {HOST}:{port}")
