@@ -37,7 +37,7 @@ print(f"Listening on {HOST}:{port}")
 while True:
 	conn, addr = pmu_socket.accept()
 	print("first step ok")
-	socket_ssl = ssl.wrap_socket(conn, server_side=True)
+	socket_ssl = context.wrap_socket(conn, server_side=True)
 	print(f"Connection from {addr} accepted")
 	cmd = socket_ssl.recv(BUFFER_SIZE).decode()
 	if cmd.startswith("CMD_short:0"):
