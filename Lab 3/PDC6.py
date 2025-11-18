@@ -44,16 +44,15 @@ try:
         message = ws.recv()
         if not message:
             break
-        buffer += message
-        while True:
+        buffer += str(message.decode())
+        '''while True:
             match = pattern.search(buffer)
             if not match:
                 break
             print(match.group())
-            buffer = buffer[match.end():]
-
-    if buffer:
+            buffer = buffer[match.end():]'''
         print(buffer)
+        buffer = ""
 finally:
     s.close()
 
