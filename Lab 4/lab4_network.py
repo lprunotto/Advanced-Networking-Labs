@@ -90,17 +90,17 @@ def Lab4_Network():
     h1.cmd('ip route add default via 10.10.11.1')
     h1.cmd('ip -6 addr add 2001:1:0:11::10/64 dev h1-eth1')
     h1.cmd('ip -6 route add default via 2001:1:0:11::1')
-    h1.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h1 &')
+    #h1.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h1 &')
 
     h2.cmd('ip route add default via 10.10.35.5')
     h2.cmd('ip -6 addr add 2001:1:0:35::20/64 dev h2-eth1')
     h2.cmd('ip -6 route add default via 2001:1:0:35::5')
-    h2.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h2 &')
+    #h2.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h2 &')
     
     h3.cmd('ip route add default via 10.10.35.3')
     h3.cmd('ip -6 addr add 2001:1:0:35::30/64 dev h3-eth1')
     h3.cmd('ip -6 route add default via 2001:1:0:35::3')
-    h3.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h3 &')
+    #h3.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h3 &')
 
     index=3
     for host in hosts:
@@ -108,14 +108,15 @@ def Lab4_Network():
         host.cmd('ip route add default via 10.10.24.2')
         host.cmd('ip -6 addr add 2001:1:0:24::%s0/64 dev h%s-eth1' % (index, index))
         host.cmd('ip -6 route add default via 2001:1:0:24::2')
-        host.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h%s &' % index)
+        #host.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T h%s &' % index)
 
 
     index=0
     for router in routers:
         index+=1
-        router.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T r%s &' % index)
+        #router.cmd('xterm -xrm \'XTerm.vt100.allowTitleOps: false\' -T r%s &' % index)
         router.cmd('sysctl -w net.ipv4.conf.all.rp_filter=0')
+        
 
     r1.cmd('sysctl -w net.ipv4.conf.r1-eth1.rp_filter=0')
     r1.cmd('sysctl -w net.ipv4.conf.r1-eth2.rp_filter=0')
@@ -136,6 +137,23 @@ def Lab4_Network():
     r5.cmd('sysctl -w net.ipv4.conf.r5-eth1.rp_filter=0')
     r5.cmd('sysctl -w net.ipv4.conf.r5-eth2.rp_filter=0')
     r5.cmd('sysctl -w net.ipv4.conf.r5-eth3.rp_filter=0')
+
+    index = 0
+    for router in routers:
+        index += 1
+        router.cmd('/usr/lib/frr/zebra -d -f /home/advnet/Desktop/lab4/configs/zebra_r%s.cfg -i /home/advnet/Desktop/lab4/run/zebra_r%s.pid -z /home/advnet/Desktop/lab4/run/frr_r%s.api -u frr -g frr' % (index, index, index))
+        
+    index = 0
+    for router in routers:
+        index += 1
+        if (not index == 4):
+            router.cmd('/usr/lib/frr/ospfd -d -f /home/advnet/Desktop/lab4/configs/ospfd_r%s.cfg -i /home/advnet/Desktop/lab4/run/ospfd_r%s.pid -z /home/advnet/Desktop/lab4/run/frr_r%s.api -u frr -g frr' % (index, index, index))
+
+    index = 0
+    for router in routers:
+        index += 1
+        if (not index == 4):
+            router.cmd('/usr/lib/frr/ospf6d -d -f /home/advnet/Desktop/lab4/configs/ospf6d_r%s.cfg -i /home/advnet/Desktop/lab4/run/ospf6d_r%s.pid -z /home/advnet/Desktop/lab4/run/frr_r%s.api -u frr -g frr' % (index, index, index))
 
 
 
